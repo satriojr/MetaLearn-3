@@ -4,3 +4,7 @@
 Thumbs.db
 *.log
 .env
+dir
+docker-compose
+__pycache__
+*.pyc
