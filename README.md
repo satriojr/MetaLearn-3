@@ -293,7 +293,7 @@ Docker & Docker Compose (opsional, direkomendasikan)
 ### Clone Repository
 
 ```bash
-git clone https://github.com/nexanode-umk/metalearn.git
+git clone https://github.com/satriojr/MetaLearn-3.git
 cd metalearn
 ```
 
