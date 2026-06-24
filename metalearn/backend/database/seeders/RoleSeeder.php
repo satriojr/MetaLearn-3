@@ -9,6 +9,7 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
+        if (DB::table('roles')->exists()) { return; }
         DB::table('roles')->insert([
             ['name' => 'siswa', 'description' => 'Siswa - pengguna utama platform'],
             ['name' => 'guru', 'description' => 'Guru / tenaga pendidik'],

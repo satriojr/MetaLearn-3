@@ -9,6 +9,7 @@ class LearningStyleSeeder extends Seeder
 {
     public function run(): void
     {
+        if (DB::table('learning_styles')->exists()) { return; }
         DB::table('learning_styles')->insert([
             ['code' => 'visual', 'name' => 'Visual', 'description' => 'Belajar optimal melalui gambar, diagram, dan video'],
             ['code' => 'auditory', 'name' => 'Auditori', 'description' => 'Belajar optimal melalui pendengaran dan diskusi'],

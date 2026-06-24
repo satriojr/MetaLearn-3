@@ -9,6 +9,7 @@ class QuestionBankSeeder extends Seeder
 {
     public function run(): void
     {
+        if (DB::table('question_bank')->exists()) { return; }
         // Get missions
         $missions = DB::table('missions')->get()->keyBy('title');
 

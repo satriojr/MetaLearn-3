@@ -9,6 +9,7 @@ class LevelSeeder extends Seeder
 {
     public function run(): void
     {
+        if (DB::table('levels')->exists()) { return; }
         $levels = [
             ['level_number' => 1, 'title' => 'Pelajar Pemula', 'min_xp' => 0, 'max_xp' => 99],
             ['level_number' => 2, 'title' => 'Pelajar Aktif', 'min_xp' => 100, 'max_xp' => 299],

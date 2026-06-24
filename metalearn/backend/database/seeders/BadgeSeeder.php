@@ -9,6 +9,7 @@ class BadgeSeeder extends Seeder
 {
     public function run(): void
     {
+        if (DB::table('badges')->exists()) { return; }
         DB::table('badges')->insert([
             ['name' => 'Perintis', 'description' => 'Menyelesaikan misi pertama', 'icon' => 'rocket', 'criteria_type' => 'mission_complete', 'criteria_value' => '1'],
             ['name' => 'Ninja Fokus', 'description' => 'Sesi belajar tanpa interupsi ≥ 30 menit', 'icon' => 'focus', 'criteria_type' => 'ai_dynamic', 'criteria_value' => 'focus_30min'],

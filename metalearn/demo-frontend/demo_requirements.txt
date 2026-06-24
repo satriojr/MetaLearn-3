@@ -1,0 +1,5 @@
+streamlit==1.43.*
+httpx==0.28.*
+plotly==6.0.*
+python-dotenv==1.1.*
+networkx==3.*

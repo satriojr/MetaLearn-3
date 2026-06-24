@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             BadgeSeeder::class,
             TopicSeeder::class,
             QuestionBankSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

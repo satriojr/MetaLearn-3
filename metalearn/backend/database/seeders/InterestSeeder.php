@@ -9,6 +9,7 @@ class InterestSeeder extends Seeder
 {
     public function run(): void
     {
+        if (DB::table('interests')->exists()) { return; }
         DB::table('interests')->insert([
             ['name' => 'Matematika', 'icon' => 'calculator', 'color' => '#6366f1'],
             ['name' => 'Fisika', 'icon' => 'atom', 'color' => '#ef4444'],

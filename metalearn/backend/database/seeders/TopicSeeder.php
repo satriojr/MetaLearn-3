@@ -9,6 +9,7 @@ class TopicSeeder extends Seeder
 {
     public function run(): void
     {
+        if (DB::table('topics')->exists()) { return; }
         // ============== MATEMATIKA ==============
         $mathId = DB::table('topics')->insertGetId([
             'name'        => 'Matematika',
