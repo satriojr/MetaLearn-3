@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+.pytest_cache
+.vscode
+.idea
+*.swp
+*.swo
+tests
+.env.local
+venv
+env

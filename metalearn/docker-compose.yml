@@ -1,88 +1,135 @@
 services:
   postgres:
     image: postgres:16-alpine
+    container_name: metalearn-postgres
     environment:
-      POSTGRES_DB: metalearn
       POSTGRES_USER: metalearn
-      POSTGRES_PASSWORD: metalearn_secret
+      POSTGRES_PASSWORD: metalearn_dev_password
+      POSTGRES_DB: metalearn
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U metalearn"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine
+    container_name: metalearn-redis
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   minio:
-    image: minio/minio
-    command: server /data --console-address ":9001"
-    ports:
-      - "9000:9000"
-      - "9001:9001"
+    image: minio/minio:latest
+    container_name: metalearn-minio
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
     volumes:
       - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    container_name: metalearn-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://metalearn:metalearn_dev_password@postgres:5432/metalearn
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-your_super_secret_key_here}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      AI_SERVICE_URL: http://ai-service:8001
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin
+      S3_BUCKET: metalearn-assets
     ports:
       - "8000:8000"
-    environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_DATABASE: metalearn
-      DB_USERNAME: metalearn
-      DB_PASSWORD: metalearn_secret
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-    depends_on:
-      - postgres
-      - redis
     volumes:
       - ./backend:/var/www
-
-  reverb:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    command: php artisan reverb:start
-    ports:
-      - "8080:8080"
-    environment:
-      DB_HOST: postgres
-      REDIS_HOST: redis
-    depends_on:
-      - postgres
-      - redis
+      - backend_vendor:/var/www/vendor
+      - backend_storage:/var/www/storage
+    working_dir: /var/www
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
+    container_name: metalearn-frontend
     depends_on:
       - backend
+    environment:
+      VITE_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    working_dir: /app
 
   ai-service:
     build:
       context: ./ai-service
       dockerfile: Dockerfile
+    container_name: metalearn-ai-service
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      REDIS_URL: redis://redis:6379
     ports:
       - "8001:8001"
+    volumes:
+      - ./ai-service:/app
+    working_dir: /app
+
+  streamlit:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile.streamlit
+    container_name: metalearn-streamlit
     depends_on:
-      - postgres
-      - redis
+      - ai-service
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./ai-service:/app
+    working_dir: /app
 
 volumes:
   postgres_data:
   redis_data:
   minio_data:
+  backend_vendor:
+  backend_storage:
+
+networks:
+  default:
+    name: metalearn-network
