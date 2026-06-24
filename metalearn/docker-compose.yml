@@ -123,6 +123,21 @@ services:
       - ./ai-service:/app
     working_dir: /app
 
+  admin-dashboard:
+    build:
+      context: ./admin-dashboard
+      dockerfile: Dockerfile.admin
+    container_name: metalearn-admin
+    depends_on:
+      - backend
+    environment:
+      API_BASE_URL: http://backend:8000/api
+    ports:
+      - "8502:8502"
+    volumes:
+      - ./admin-dashboard:/app
+    working_dir: /app
+
 volumes:
   postgres_data:
   redis_data:

@@ -1,0 +1,12 @@
+FROM python:3.13-slim
+
+WORKDIR /app
+
+COPY admin_requirements.txt .
+RUN pip install --no-cache-dir -r admin_requirements.txt
+
+COPY . .
+
+EXPOSE 8502
+
+CMD ["streamlit", "run", "admin_app.py", "--server.port=8502", "--server.address=0.0.0.0"]
