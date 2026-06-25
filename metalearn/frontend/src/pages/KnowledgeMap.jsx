@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import StarMap from '../components/StarMap';
 import { topics } from '../services/api';
 
 export default function KnowledgeMap() {
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -85,7 +87,7 @@ export default function KnowledgeMap() {
             className="p-3 rounded-xl bg-white/5 border border-white/10 text-center hover:bg-white/10 transition cursor-pointer"
             onClick={() => {
               const firstPath = topic.learning_paths?.[0];
-              if (firstPath) window.location.href = `/missions/${firstPath.id}`;
+              if (firstPath) navigate(`/missions/${firstPath.id}`);
             }}
           >
             <div

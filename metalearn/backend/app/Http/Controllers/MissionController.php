@@ -66,24 +66,11 @@ class MissionController extends Controller
 
         $user = $request->user();
 
-        // Record frontend traces as cognitive traces
-        if (!empty($validated['traces'])) {
-            foreach ($validated['traces'] as $trace) {
-                \App\Models\CognitiveTrace::create([
-                    'user_id'     => $user->id,
-                    'question_id' => $trace['question_id'] ?? null,
-                    'action_type' => $trace['action_type'] ?? 'submit',
-                    'duration_ms' => $trace['duration_ms'] ?? null,
-                    'payload'     => $trace['payload'] ?? [],
-                    'recorded_at' => now(),
-                ]);
-            }
-        }
-
         $result = $this->assessment->submitMission(
             $user,
             $mission->id,
-            $validated['answers']
+            $validated['answers'],
+            $validated['traces'] ?? []
         );
 
         return response()->json($result);

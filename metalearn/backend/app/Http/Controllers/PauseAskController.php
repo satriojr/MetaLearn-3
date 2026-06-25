@@ -38,7 +38,7 @@ class PauseAskController extends Controller
 
         $missionContext = '';
         if (!empty($validated['mission_id'])) {
-            $mission = Mission::with('questions')->find($validated['mission_id']);
+            $mission = Mission::with('questions', 'learningPath')->find($validated['mission_id']);
             if ($mission) {
                 $missionContext = "Konteks materi: {$mission->title}\n"
                     . "Topik terkait: " . ($mission->learningPath?->name ?? '') . "\n";

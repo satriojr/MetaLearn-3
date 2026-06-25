@@ -105,12 +105,15 @@ class GamificationService
 
         $badges = Badge::whereDoesntHave('users', fn($q) => $q->where('user_id', $user->id))->get();
 
+        $completedMissions = UserProgress::where('user_id', $user->id)
+            ->where('status', 'completed')->count();
+
         foreach ($badges as $badge) {
             $earnedIt = match ($badge->criteria_type) {
                 'xp_threshold' => $userLevel->current_xp >= (int) $badge->criteria_value,
                 'level_reach' => ($userLevel->level?->level_number ?? 1) >= (int) $badge->criteria_value,
-                'missions_completed' => UserProgress::where('user_id', $user->id)
-                    ->where('status', 'completed')->count() >= (int) $badge->criteria_value,
+                'missions_completed', 'mission_complete' => $completedMissions >= (int) $badge->criteria_value,
+                'streak' => false,
                 default => false,
             };
 

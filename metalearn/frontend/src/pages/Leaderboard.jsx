@@ -4,7 +4,6 @@ import { gamification } from '../services/api';
 export default function Leaderboard() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all'); // 'all' or topic_id
 
   useEffect(() => {
     gamification.leaderboard()

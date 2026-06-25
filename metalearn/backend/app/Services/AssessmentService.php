@@ -58,7 +58,7 @@ class AssessmentService
         ];
     }
 
-    public function submitMission(User $user, int $missionId, array $answers): array
+    public function submitMission(User $user, int $missionId, array $answers, array $traces = []): array
     {
         $totalScore = 0;
         $maxScore = 0;
@@ -67,6 +67,17 @@ class AssessmentService
         DB::beginTransaction();
         try {
             $mission = \App\Models\Mission::with('questions')->findOrFail($missionId);
+
+            foreach ($traces as $trace) {
+                \App\Models\CognitiveTrace::create([
+                    'user_id'     => $user->id,
+                    'question_id' => $trace['question_id'] ?? null,
+                    'action_type' => $trace['action_type'] ?? 'submit',
+                    'duration_ms' => $trace['duration_ms'] ?? null,
+                    'payload'     => $trace['payload'] ?? [],
+                    'recorded_at' => now(),
+                ]);
+            }
 
             foreach ($mission->questions as $question) {
                 $userAnswer = $answers[$question->id] ?? null;

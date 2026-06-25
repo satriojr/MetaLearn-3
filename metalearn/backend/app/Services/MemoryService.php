@@ -80,7 +80,7 @@ class MemoryService
     {
         $path = "users/{$user->id}/.ai/context.json";
         $context = $this->getContext($user);
-        $context = array_merge_recursive($context, $data);
+        $context = array_replace_recursive($context, $data);
         $context['last_session'] = now()->toIso8601String();
         Storage::disk($this->disk)->put($path, json_encode($context, JSON_PRETTY_PRINT));
     }

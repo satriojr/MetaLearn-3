@@ -39,8 +39,8 @@ class GeminiService
         ];
 
         $response = Http::timeout(30)
-            ->withHeaders(['Content-Type' => 'application/json'])
-            ->post("{$this->apiUrl}?key={$this->apiKey}", $payload);
+            ->withHeaders(['Content-Type' => 'application/json', 'X-Goog-Api-Key' => $this->apiKey])
+            ->post($this->apiUrl, $payload);
 
         if ($response->failed()) {
             Log::error('Gemini API error', [
@@ -77,8 +77,8 @@ class GeminiService
         ];
 
         $response = Http::timeout(30)
-            ->withHeaders(['Content-Type' => 'application/json'])
-            ->post("{$this->apiUrl}?key={$this->apiKey}", $payload);
+            ->withHeaders(['Content-Type' => 'application/json', 'X-Goog-Api-Key' => $this->apiKey])
+            ->post($this->apiUrl, $payload);
 
         if ($response->failed()) {
             Log::error('Gemini API error (JSON)', [
@@ -91,7 +91,7 @@ class GeminiService
         $data = $response->json();
         $text = $data['candidates'][0]['content']['parts'][0]['text'] ?? '';
 
-        $text = preg_replace('/```(json)?\n?/', '', $text);
+        $text = preg_replace('/```(?:json)?\s*/', '', $text);
         $text = trim($text);
 
         $decoded = json_decode($text, true);

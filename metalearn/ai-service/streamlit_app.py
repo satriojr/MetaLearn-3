@@ -29,6 +29,7 @@ st.sidebar.page_link("pages/2_bkt.py", label="BKT Engine", icon="📊")
 st.sidebar.page_link("pages/3_pathway.py", label="Pathway Engine", icon="🗺️")
 st.sidebar.page_link("pages/4_ast.py", label="AST Evaluator", icon="🔍")
 st.sidebar.page_link("pages/5_report.py", label="Report Engine", icon="📝")
+st.sidebar.page_link("pages/6_quiz_ai.py", label="AI Quiz Engine", icon="🧪")
 
 st.sidebar.markdown("---")
 st.sidebar.markdown(
@@ -42,7 +43,7 @@ st.markdown(
     "Dashboard interaktif untuk menguji dan memvisualisasikan mesin AI MetaLearn."
 )
 
-col1, col2, col3, col4, col5 = st.columns(5)
+col1, col2, col3, col4, col5, col6 = st.columns(6)
 
 with col1:
     st.metric("NLP Engine", "Online" if _check_gemini() else "No API Key",
@@ -64,6 +65,10 @@ with col5:
     st.metric("Report Engine", "Online" if _check_gemini() else "No API Key",
               help="AI-generated narrative reports")
 
+with col6:
+    st.metric("AI Quiz Engine", "Ready",
+              help="Quiz with AST + BKT + NLP")
+
 st.markdown("---")
 
 st.subheader("Quick Start")
@@ -73,6 +78,7 @@ st.markdown("""
 - **🗺️ Pathway Engine** — Generate adaptive learning pathways
 - **🔍 AST Evaluator** — Evaluate student answer structures
 - **📝 Report Engine** — Generate narrative student reports
+- **🧪 AI Quiz Engine** — Quiz with AST evaluation + BKT mastery + NLP feedback
 """)
 
 if not _check_gemini():

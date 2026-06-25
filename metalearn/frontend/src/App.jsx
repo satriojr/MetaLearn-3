@@ -13,6 +13,7 @@ import Dashboard from './pages/Dashboard'
 import Leaderboard from './pages/Leaderboard'
 import MetacognitiveDashboard from './pages/MetacognitiveDashboard'
 import TeacherDashboard from './pages/TeacherDashboard'
+import Chat from './pages/Chat'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -32,7 +33,7 @@ function TeacherRoute({ children }) {
   const { user, loading } = useAuth()
   if (loading) return null
   if (!user) return <Navigate to="/login" replace />
-  if (user.role !== 'guru' && user.role_id !== 2) return <Navigate to="/dashboard" replace />
+  if (user.role !== 'guru') return <Navigate to="/dashboard" replace />
   return children
 }
 
@@ -59,6 +60,7 @@ export default function App() {
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
         <Route path="/metacognitive" element={<ProtectedRoute><MetacognitiveDashboard /></ProtectedRoute>} />
+        <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
         <Route path="/teacher" element={<TeacherRoute><TeacherDashboard /></TeacherRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

@@ -73,12 +73,7 @@ if not st.session_state.token:
         else:
             st.error("Email atau password salah. Coba akun demo: teacher@metalearn.dev / password123")
 
-    st.info(
-        "💡 **Demo credentials:**\n\n"
-        "- Guru: `teacher@metalearn.dev` / `password123`\n"
-        "- Admin: `admin@metalearn.dev` / `password123`\n\n"
-        "Pastikan backend Laravel berjalan di **localhost:8000**."
-    )
+    st.info("Pastikan backend Laravel berjalan di **localhost:8000**.")
     st.stop()
 
 st.sidebar.markdown(f"**👤 {st.session_state.user.get('name', 'User')}**")
@@ -89,6 +84,7 @@ st.sidebar.page_link("admin_app.py", label="Overview", icon="📊")
 st.sidebar.page_link("pages/1_students.py", label="Students", icon="👥")
 st.sidebar.page_link("pages/2_student_detail.py", label="Student Detail", icon="🔍")
 st.sidebar.page_link("pages/3_reports.py", label="Reports", icon="📝")
+st.sidebar.page_link("pages/4_quiz_game.py", label="Quiz Game", icon="🎮")
 st.sidebar.markdown("---")
 if st.sidebar.button("Logout", type="secondary", use_container_width=True):
     st.session_state.token = None

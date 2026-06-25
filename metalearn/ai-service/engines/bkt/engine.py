@@ -60,15 +60,12 @@ class BKTEngine:
             return self.params["p_init"]
 
         mastery = self.params["p_init"]
-        # Simulate sequence: we don't know the order, so use a simplified estimate
-        for _ in range(total_count - streak):
-            mastery = self.update_mastery(mastery, is_correct=False)
-        for _ in range(streak):
-            mastery = self.update_mastery(mastery, is_correct=True)
+        incorrect_count = total_count - correct_count
 
-        avg_correct = correct_count / total_count
-        for _ in range(total_count):
-            mastery = self.update_mastery(mastery, is_correct=avg_correct > 0.5)
+        for _ in range(incorrect_count):
+            mastery = self.update_mastery(mastery, is_correct=False)
+        for _ in range(correct_count):
+            mastery = self.update_mastery(mastery, is_correct=True)
 
         return min(max(mastery, 0.0), 1.0)
 

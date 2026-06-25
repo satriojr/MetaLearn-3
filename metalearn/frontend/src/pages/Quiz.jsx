@@ -15,8 +15,11 @@ export default function Quiz() {
   const [traces, setTraces] = useState([]);
   const questionStartTime = useRef(Date.now());
   const pauseCount = useRef(0);
+  const startedRef = useRef(false);
 
   useEffect(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
     missions.start(missionId)
       .then((res) => setMission(res.data.mission))
       .catch(() => {})

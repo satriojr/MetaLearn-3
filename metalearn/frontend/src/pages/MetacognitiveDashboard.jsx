@@ -137,7 +137,7 @@ export default function MetacognitiveDashboard() {
               <p className="text-xs text-gray-500">Area yang sering membuatmu berhenti</p>
             </div>
           </div>
-          <ConfusionHeatmap zones={confusionZones.map(z => ({ name: z, count: 1 }))} />
+          <ConfusionHeatmap zones={confusionZones} />
         </div>
 
         <div className="glass rounded-2xl p-6 border border-white/10">

@@ -120,6 +120,7 @@ with st.sidebar:
     st.page_link("pages/2_learning_paths.py", label="🛤️ Learning Paths", icon="🛤️")
     st.page_link("pages/3_knowledge_map.py", label="🧠 Knowledge Map", icon="🧠")
     st.page_link("pages/4_gamification.py", label="🏆 Gamification", icon="🏆")
+    st.page_link("pages/5_quiz_game.py", label="🎮 Quiz Game", icon="🎮")
     st.divider()
     if st.session_state.token:
         if st.sidebar.button("🚪 Sign Out", use_container_width=True):

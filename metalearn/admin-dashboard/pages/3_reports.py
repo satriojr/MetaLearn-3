@@ -118,23 +118,27 @@ Siti adalah siswa berprestasi dengan penguasaan materi yang konsisten di atas 80
 
 st.markdown("---")
 
+if "generated_report" not in st.session_state:
+    st.session_state.generated_report = None
+
 if st.button("Generate Report", type="primary", use_container_width=True):
     with st.spinner("Generating report..."):
         try:
             report_data = api_get("/dashboard/report")
             if report_data and report_data.get("report"):
+                st.session_state.generated_report = report_data["report"]
                 st.success("Report generated successfully!")
                 st.markdown(report_data["report"])
                 st.caption(f"Generated at: {report_data.get('generated_at', datetime.now().isoformat())}")
             else:
-                report = sample_reports.get(selected_id, sample_reports[1])
+                st.session_state.generated_report = sample_reports.get(selected_id, sample_reports[1])
                 st.success("Report generated (offline demo)!")
-                st.markdown(report)
+                st.markdown(st.session_state.generated_report)
                 st.caption("⚠️ Backend tidak tersedia — menampilkan sample report.")
         except Exception as e:
-            report = sample_reports.get(selected_id, sample_reports[1])
+            st.session_state.generated_report = sample_reports.get(selected_id, sample_reports[1])
             st.success("Report generated (offline demo)!")
-            st.markdown(report)
+            st.markdown(st.session_state.generated_report)
             st.caption("⚠️ Backend tidak tersedia — menampilkan sample report.")
 
 st.markdown("---")
@@ -144,7 +148,7 @@ col1, col2, col3 = st.columns(3)
 with col1:
     st.download_button(
         "📥 Download as Markdown",
-        data=sample_reports.get(selected_id, sample_reports[1]),
+        data=st.session_state.generated_report or sample_reports.get(selected_id, sample_reports[1]),
         file_name=f"report_student_{selected_id}.md",
         mime="text/markdown",
         use_container_width=True,

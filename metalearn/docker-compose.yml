@@ -67,8 +67,10 @@ services:
       S3_ACCESS_KEY: minioadmin
       S3_SECRET_KEY: minioadmin
       S3_BUCKET: metalearn-assets
+      QUEUE_CONNECTION: sync
     ports:
       - "8000:8000"
+      - "8080:8080"
     volumes:
       - ./backend:/var/www
       - backend_vendor:/var/www/vendor

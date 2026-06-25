@@ -1,12 +1,14 @@
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
+import NotificationBell from './NotificationBell';
 
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', icon: '📊' },
   { to: '/knowledge-map', label: 'Peta Belajar', icon: '🗺️' },
   { to: '/leaderboard', label: 'Peringkat', icon: '🏆' },
   { to: '/metacognitive', label: 'Analitik', icon: '🪞' },
+  { to: '/chat', label: 'Chat AI', icon: '🤖' },
 ];
 
 export default function Layout() {
@@ -80,6 +82,7 @@ export default function Layout() {
                     🎓 Guru
                   </Link>
                 )}
+                <NotificationBell />
                 <button
                   onClick={handleLogout}
                   className="px-3 py-1.5 text-xs rounded-xl glass text-gray-400 hover:text-white hover:bg-white/10 transition"

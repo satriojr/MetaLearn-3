@@ -1,15 +1,12 @@
-import os
 import json
-import google.generativeai as genai
 from typing import Optional
+
+from engines.gemini import get_gemini_model
 
 
 class GeminiNLPEngine:
     def __init__(self):
-        api_key = os.getenv("GEMINI_API_KEY", "")
-        if api_key:
-            genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = get_gemini_model()
 
     def ask(self, question: str, context: Optional[dict] = None) -> str:
         context = context or {}

@@ -8,12 +8,13 @@ from engines.pathway.engine import AdaptivePathwayEngine
 from engines.bkt.engine import BKTEngine
 from engines.ast_evaluator.engine import ASTEvaluator
 from engines.report.engine import NarrativeReportEngine
+from engines.chatbot.engine import ChatbotEngine
 
 app = FastAPI(title="MetaLearn AI Service", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000", "http://localhost:8501", "http://localhost:8000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -24,6 +25,7 @@ pathway_engine = AdaptivePathwayEngine()
 bkt_engine = BKTEngine()
 ast_evaluator = ASTEvaluator()
 report_engine = NarrativeReportEngine()
+chatbot_engine = ChatbotEngine()
 
 
 # --- Schemas ---
@@ -54,6 +56,15 @@ class ASTEvaluateRequest(BaseModel):
     question_text: str
 
 
+class ChatRequest(BaseModel):
+    message: str
+    session_id: Optional[str] = None
+
+
+class ChatResetRequest(BaseModel):
+    session_id: str
+
+
 class ReportRequest(BaseModel):
     student_name: str
     mastery_scores: dict
@@ -79,6 +90,25 @@ class RemedialRequest(BaseModel):
 
 
 # --- Routes ---
+
+
+@app.post("/chat/send")
+async def chat_send(req: ChatRequest):
+    try:
+        result = chatbot_engine.send_message(req.message, req.session_id)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/chat/reset")
+async def chat_reset(req: ChatResetRequest):
+    try:
+        result = chatbot_engine.reset_session(req.session_id)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/health")
 async def health():

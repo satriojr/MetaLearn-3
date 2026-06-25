@@ -97,10 +97,7 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Dev hint */}
-        <div className="mt-4 p-3 rounded-xl border border-yellow-500/20 bg-yellow-500/5 text-xs text-gray-500">
-          <strong className="text-yellow-400">Dev:</strong> student@metalearn.dev / password123
-        </div>
+
       </div>
     </div>
   );

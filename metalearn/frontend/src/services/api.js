@@ -58,6 +58,11 @@ export const ai = {
   pauseAsk: (data) => api.post('/ai/pause-ask', data),
 };
 
+export const chat = {
+  send: (data) => api.post('/ai/chat', data),
+  reset: (data) => api.post('/ai/chat/reset', data),
+};
+
 export const gamification = {
   stats: () => api.get('/gamification/stats'),
   leaderboard: (topicId) => api.get(`/gamification/leaderboard${topicId ? `?topic_id=${topicId}` : ''}`),
@@ -72,6 +77,13 @@ export const dashboard = {
 export const memory = {
   show: () => api.get('/memory'),
   destroy: () => api.delete('/memory'),
+};
+
+export const notifications = {
+  list: () => api.get('/notifications'),
+  unreadCount: () => api.get('/notifications/unread-count'),
+  markAsRead: (id) => api.post(`/notifications/${id}/read`),
+  markAllAsRead: () => api.post('/notifications/read-all'),
 };
 
 export default api;

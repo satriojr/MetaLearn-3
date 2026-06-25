@@ -20,6 +20,10 @@ export default function Missions() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!pathId) {
+      setLoading(false);
+      return;
+    }
     learningPaths.show(pathId)
       .then((res) => setPath(res.data))
       .catch(() => {})
@@ -132,11 +136,11 @@ export default function Missions() {
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      mission.difficulty <= 1 ? 'bg-green-500/20 text-green-300' :
-                      mission.difficulty <= 2 ? 'bg-yellow-500/20 text-yellow-300' :
+                      (mission.difficulty || 1) <= 1 ? 'bg-green-500/20 text-green-300' :
+                      (mission.difficulty || 1) <= 2 ? 'bg-yellow-500/20 text-yellow-300' :
                       'bg-red-500/20 text-red-300'
                     }`}>
-                      {'★'.repeat(mission.difficulty || 1)}
+                      {'★'.repeat(Math.max(1, Math.min(3, mission.difficulty || 1)))}
                     </span>
                     <span className="text-indigo-400 group-hover:translate-x-1 transition-transform">→</span>
                   </div>

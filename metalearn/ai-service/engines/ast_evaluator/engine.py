@@ -16,15 +16,12 @@ import re
 import json
 from typing import Optional
 
-import google.generativeai as genai
+from engines.gemini import get_gemini_model
 
 
 class ASTEvaluator:
     def __init__(self):
-        api_key = os.getenv("GEMINI_API_KEY", "")
-        if api_key:
-            genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = get_gemini_model()
 
     def evaluate(self, student_answer: str, correct_answer: str, question_text: str) -> dict:
         exact_match = student_answer.strip().lower() == correct_answer.strip().lower()

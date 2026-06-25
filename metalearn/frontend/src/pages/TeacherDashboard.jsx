@@ -24,7 +24,9 @@ export default function TeacherDashboard() {
   );
 
   const stats = data?.class_stats || {};
-  const students = (data?.students || [])
+  const allStudents = data?.students || [];
+  const stagnantStudents = allStudents.filter((s) => (s.missions_completed || 0) === 0);
+  const students = allStudents
     .filter((s) => s.name?.toLowerCase().includes(search.toLowerCase()) || s.email?.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) => {
       if (sortBy === 'xp') return (b.xp || 0) - (a.xp || 0);
@@ -33,8 +35,6 @@ export default function TeacherDashboard() {
       if (sortBy === 'name') return a.name?.localeCompare(b.name);
       return 0;
     });
-
-  const stagnantStudents = students.filter((s) => (s.missions_completed || 0) === 0);
 
   const formatDate = (dateStr) => {
     if (!dateStr) return 'Belum aktif';
@@ -52,8 +52,9 @@ export default function TeacherDashboard() {
           <p className="text-gray-400 text-sm mt-1">Pantau perkembangan seluruh siswa di kelasmu secara real-time</p>
         </div>
         <button
-          onClick={() => {/* export functionality */}}
-          className="px-5 py-2.5 text-sm rounded-xl glass border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/10 transition"
+          disabled
+          className="px-5 py-2.5 text-sm rounded-xl glass border border-white/5 text-gray-500 cursor-not-allowed"
+          title="Fitur ekspor sedang dalam pengembangan"
         >
           📥 Ekspor Data
         </button>
@@ -155,8 +156,7 @@ export default function TeacherDashboard() {
               {search ? 'Tidak ada siswa yang cocok dengan pencarian.' : 'Belum ada siswa terdaftar.'}
             </div>
           ) : (
-            students.map((student, idx) => {
-              const xpRate = stats.average_xp > 0 ? (student.xp / stats.average_xp) * 100 : 100;
+            students.map((student) => {
               const isAboveAvg = student.xp >= stats.average_xp;
               const isStagnant = student.missions_completed === 0;
               return (

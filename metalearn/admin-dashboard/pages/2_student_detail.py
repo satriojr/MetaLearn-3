@@ -26,8 +26,7 @@ def api_get(path: str) -> dict | None:
         return None
 
 
-params = st.query_params
-student_id = params.get("id")
+student_id = st.session_state.get("selected_student_id")
 
 if not student_id:
     st.warning("Pilih student dari halaman Students.")
@@ -82,14 +81,8 @@ sample_students = {
 sid = int(student_id) if str(student_id).isdigit() else 1
 student = sample_students.get(sid, sample_students[1])
 
-# Try to get real data
-data = api_get("/dashboard/student")
-if data:
-    user = data.get("profile", {})
-    student["name"] = user.get("name", student["name"])
-    student["email"] = user.get("email", student["email"])
-    student["mastery"] = data.get("mastery", {}).get("mastery_scores", student["mastery"])
-    student["confusion_zones"] = data.get("mastery", {}).get("confusion_zones", student["confusion_zones"])
+# Note: API does not support fetching individual student data by ID yet.
+# Using sample data as fallback. Student detail endpoint would be added in future.
 
 col1, col2 = st.columns([2, 1])
 

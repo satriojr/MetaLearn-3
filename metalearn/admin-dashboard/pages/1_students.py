@@ -27,7 +27,7 @@ def api_get(path: str) -> dict | None:
 
 data = api_get("/dashboard/teacher")
 
-if data and data.get("students"):
+if data and data.get("students") is not None:
     students = data["students"]
     stats = data.get("class_stats", {})
 
@@ -38,8 +38,8 @@ if data and data.get("students"):
 
     filtered = [
         s for s in students
-        if (not search or search.lower() in s["name"].lower())
-        and s["xp"] >= min_xp
+        if (not search or search.lower() in s.get("name", "").lower())
+        and s.get("xp", 0) >= min_xp
     ]
     filtered.sort(key=lambda s: s.get(sort_by, 0) if sort_by != "name" else s.get("name", ""))
 
@@ -53,7 +53,8 @@ if data and data.get("students"):
             col3.metric("XP", s.get("xp", 0))
             col4.metric("Missions", s.get("missions_completed", 0))
             if col5.button("View", key=f"view_{s['id']}"):
-                st.switch_page(f"pages/2_student_detail.py?id={s['id']}")
+                st.session_state.selected_student_id = s["id"]
+                st.switch_page("pages/2_student_detail.py")
 else:
     sample = [
         {"id": 1, "name": "Budi Santoso", "email": "budi@mail.com", "level": 7, "xp": 2840, "missions_completed": 12, "last_active": "2026-06-24"},
@@ -74,5 +75,5 @@ else:
             col3.metric("XP", s.get("xp", 0))
             col4.metric("Missions", s.get("missions_completed", 0))
             if col5.button("View", key=f"view_{s['id']}"):
-                st.query_params.id = s["id"]
+                st.session_state.selected_student_id = s["id"]
                 st.switch_page("pages/2_student_detail.py")

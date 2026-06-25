@@ -1,8 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { scanner } from '../services/api';
 
 const STEP_ICONS = ['🔍', '🎨', '⏱️'];
+
+const STEP_VALIDATORS = {
+  multiple_select: (answers) => answers.interests.length >= 2,
+  single_select: (answers) => !!answers.learning_style,
+  duration: () => true,
+};
 
 export default function Scanner() {
   const [questions, setQuestions] = useState([]);
@@ -12,12 +18,16 @@ export default function Scanner() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
+  const navigateTimer = useRef(null);
 
   useEffect(() => {
     scanner.getQuestions()
       .then((res) => setQuestions(res.data.questions))
       .catch(() => {})
       .finally(() => setLoading(false));
+    return () => {
+      if (navigateTimer.current) clearTimeout(navigateTimer.current);
+    };
   }, []);
 
   const toggleInterest = (id) => {
@@ -30,7 +40,6 @@ export default function Scanner() {
   const handleSubmit = async () => {
     if (answers.interests.length < 2 || !answers.learning_style) return;
     setSubmitting(true);
-    setSubmitted(true);
     try {
       await scanner.submit({
         interest_ids: answers.interests,
@@ -38,10 +47,10 @@ export default function Scanner() {
         goals: answers.goals,
         session_duration: answers.session_duration,
       });
-      setTimeout(() => navigate('/knowledge-map'), 2000);
+      setSubmitted(true);
+      navigateTimer.current = setTimeout(() => navigate('/knowledge-map'), 2000);
     } catch {
       setSubmitting(false);
-      setSubmitted(false);
     }
   };
 
@@ -70,11 +79,7 @@ export default function Scanner() {
 
   const q = questions[step];
   const progress = ((step + 1) / questions.length) * 100;
-  const canNext = step === 0
-    ? answers.interests.length >= 2
-    : step === 1
-    ? !!answers.learning_style
-    : true;
+  const canNext = q ? (STEP_VALIDATORS[q.type] || (() => true))(answers) : true;
 
   return (
     <div className="max-w-2xl mx-auto py-8">

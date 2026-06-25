@@ -1,16 +1,12 @@
 import json
-import os
 from typing import Optional
 
-import google.generativeai as genai
+from engines.gemini import get_gemini_model
 
 
 class AdaptivePathwayEngine:
     def __init__(self):
-        api_key = os.getenv("GEMINI_API_KEY", "")
-        if api_key:
-            genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = get_gemini_model()
 
     def generate_pathway(
         self,
